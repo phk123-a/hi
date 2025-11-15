@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thiệp 20/11</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      color: #fff;
+      background: radial-gradient(circle at top, #ff9a9e 0, #1b2945 60%, #090b1a 100%);
+    }
+
+    /* =============== INTRO MỚI: PHONG BÌ =============== */
+    #introScene {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #ffe5ec 0, #1b2945 65%, #050816 100%);
+      z-index: 10;
+      animation: introFadeIn 0.6s ease forwards;
+      overflow: hidden;
+    }
+
+    .intro-envelope {
+      position: relative;
+      width: min(360px, 80vw);
+      height: 220px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #f8cdda, #fba0c5);
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        0 0 26px rgba(255, 200, 220, 0.9);
+      overflow: hidden;
+      transform: scale(0.9);
+      animation: envelopePopIn 0.9s cubic-bezier(0.17, 0.67, 0.32, 1.35) forwards;
+    }
+
+    .envelope-body {
+      position: absolute;
+      inset: 34% 0 0 0;
+      background: linear-gradient(145deg, #f5a0c1, #f06292);
+      clip-path: polygon(0 0, 50% 45%, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .envelope-flap {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, #ffe8f2, #f5b5ce);
+      clip-path: polygon(0 0, 100% 0, 50% 65%);
+      transform-origin: top center;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .intro-heart {
+      position: absolute;
+      top: 46%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #ff4f7b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+      box-shadow: 0 0 16px rgba(255, 150, 190, 0.9);
+      z-index: 3;
+    }
+
+    .intro-glow {
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.65), transparent 65%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .intro-letter {
+      position: absolute;
+      inset: 18px;
+      background: #fffaf3;
+      border-radius: 14px;
+      padding: 18px 20px;
+      text-align: center;
+      color: #3a2440;
+      transform: translateY(80%) rotate(-2deg);
+      opacity: 0;
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.28),
+        0 0 18px rgba(250, 190, 210, 0.9);
+      z-index: 2;
+    }
+
+    .intro-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+
+    .intro-sub {
+      font-size: 0.85rem;
+      opacity: 0.88;
+      margin-bottom: 0.4rem;
+    }
+
+    .intro-line {
+      font-size: 0.87rem;
+      margin-top: 0.2rem;
+    }
+
+    .intro-line span {
+      color: #e91e63;
+      font-weight: 600;
+    }
+
+    /* Khi intro mở phong bì */
+    #introScene.open .envelope-flap {
+      animation: flapOpen 1.3s ease-out forwards;
+    }
+
+    #introScene.open .intro-letter {
+      animation: letterUpFancy 1.3s cubic-bezier(0.22, 0.6, 0.25, 1.1) forwards 0.45s;
+    }
+
+    #introScene.open .intro-glow {
+      animation: glowPulse 1.8s ease-out forwards 0.4s;
+    }
+
+    /* Heart fade out & thu nhỏ khi mở */
+    #introScene.open .intro-heart {
+      animation: heartFadeOut 0.7s ease-out forwards 0.3s;
+    }
+
+    #introScene.fade-out {
+      animation: introFadeOut 0.8s ease forwards;
+      pointer-events: none;
+    }
+
+    /* =============== LAYER CHUYỂN CẢNH FLASH =============== */
+    #transitionLayer {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at center,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(255, 220, 240, 0.9) 30%,
+          rgba(255, 200, 230, 0.0) 70%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9;
+      transform: scale(0.9);
+    }
+
+    body.flash-transition #transitionLayer {
+      animation: flashZoom 1.2s ease-out forwards;
+    }
+
+    /* =============== MÀN CHÍNH =============== */
+    #mainScene {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.5rem;
+      opacity: 0;              /* ẩn ban đầu */
+      transform: scale(0.97) translateY(10px);
+      filter: blur(4px);
+      transition:
+        opacity 0.9s ease,
+        transform 0.9s ease,
+        filter 0.9s ease;
+      z-index: 1;
+    }
+
+    #mainScene.show {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      filter: blur(0);
+    }
+
+    .main-heart-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .heart-aura {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 137, 164, 0.45), transparent 65%);
+      filter: blur(2px);
+      opacity: 0.9;
+      animation: auraPulse 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .heart-glow-ring {
+      position: absolute;
+      width: 290px;
+      height: 290px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 192, 203, 0.6);
+      box-shadow:
+        0 0 18px rgba(255, 163, 190, 0.7),
+        0 0 40px rgba(255, 105, 180, 0.5);
+      opacity: 0.4;
+      animation: heartRingPulse 2.4s ease-out infinite;
+      pointer-events: none;
+    }
+
+    .main-heart-svg {
+      width: 190px;
+      height: auto;
+      filter:
+        drop-shadow(0 18px 40px rgba(255, 82, 123, 0.95))
+        drop-shadow(0 0 18px rgba(255, 214, 250, 0.95));
+      animation:
+        heartBeatSvg 1.5s ease-in-out infinite,
+        heartFloat 6s ease-in-out infinite;
+    }
+
+    .heart-spark {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff, rgba(255,255,255,0));
+      box-shadow: 0 0 8px rgba(255, 250, 250, 0.9);
+      opacity: 0;
+      animation: sparkMove 2.8s ease-in-out infinite;
+    }
+
+    .heart-spark.s1 { top: 12%; left: 52%; animation-delay: 0s; }
+    .heart-spark.s2 { top: 42%; right: 18%; animation-delay: 0.6s; }
+    .heart-spark.s3 { bottom: 16%; left: 26%; animation-delay: 1.2s; }
+    .heart-spark.s4 { top: 28%; left: 18%; animation-delay: 1.8s; }
+
+    .shoot-heart {
+      position: absolute;
+      font-size: 18px;
+      color: #ffe5ec;
+      opacity: 0;
+      text-shadow: 0 0 10px rgba(255, 169, 190, 0.9);
+      animation: heartBurst 2.4s ease-out infinite;
+    }
+
+    .sh1 { animation-delay: 0s; }
+    .sh2 { animation-delay: 0.6s; }
+    .sh3 { animation-delay: 1.2s; }
+
+    .main-title {
+      font-size: clamp(1.9rem, 3.2vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.4;
+      text-shadow: 0 0 18px rgba(255, 188, 182, 0.8);
+      margin-bottom: 0.4rem;
+    }
+
+    .main-title span {
+      background: linear-gradient(120deg, #ff9a9e, #fad0c4, #f6d365);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .center-text {
+      font-size: 0.94rem;
+      opacity: 0.92;
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 0.4rem;
+    }
+
+    .highlight { color: #ffb3c6; font-weight: 600; }
+
+    .signature {
+      margin-top: 0.2rem;
+      font-size: 0.86rem;
+      opacity: 0.8;
+      font-style: italic;
+    }
+
+    .flying-wishes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .wish {
+      position: absolute;
+      max-width: 260px;
+      font-size: 0.84rem;
+      opacity: 0;
+      filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.7));
+      animation: floatText 14s linear infinite;
+    }
+
+    .wish:nth-child(1) { top: 12%; left: 8%; animation-delay: 0s; }
+    .wish:nth-child(2) { bottom: 14%; right: 10%; animation-delay: 4s; }
+    .wish:nth-child(3) {
+      bottom: 10%;
+      left: 10%;
+      text-align: left;
+      animation-delay: 8s;
+    }
+
+    .floating-heart {
+      position: fixed;
+      bottom: -40px;
+      font-size: 18px;
+      color: #ffb6c1;
+      opacity: 0.85;
+      animation: floatUp linear forwards;
+      pointer-events: none;
+      text-shadow: 0 0 8px rgba(255, 169, 190, 0.9);
+      z-index: 0;
+    }
+
+    /* =============== KEYFRAMES =============== */
+    @keyframes introFadeIn {
+      from { opacity: 0; transform: scale(1.02); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes introFadeOut {
+      0%   { opacity: 1; transform: scale(1); filter: blur(0); }
+      40%  { opacity: 1; transform: scale(1.03); filter: blur(1px); }
+      100% { opacity: 0; transform: scale(0.96); filter: blur(6px); }
+    }
+
+    @keyframes envelopePopIn {
+      0%   { transform: scale(0.7) translateY(18px); opacity: 0; }
+      60%  { transform: scale(1.05) translateY(0); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    @keyframes flapOpen {
+      0%   { transform: rotateX(0deg); }
+      60%  { transform: rotateX(-130deg); }
+      100% { transform: rotateX(-145deg); }
+    }
+
+    @keyframes letterUpFancy {
+      0% {
+        transform: translateY(80%) rotate(-3deg) scale(0.98);
+        opacity: 0;
+      }
+      40% {
+        opacity: 1;
+      }
+      70% {
+        transform: translateY(-6%) rotate(1.5deg) scale(1.02);
+      }
+      100% {
+        transform: translateY(0%) rotate(0deg) scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes glowPulse {
+      0% { opacity: 0; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0; transform: scale(1.1); }
+    }
+
+    @keyframes heartFadeOut {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -70%) scale(0.4);
+      }
+    }
+
+    @keyframes flashZoom {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      25% {
+        opacity: 1;
+        transform: scale(1.02);
+      }
+      60% {
+        opacity: 0.9;
+        transform: scale(1.15);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.2);
+      }
+    }
+
+    @keyframes auraPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50%      { opacity: 1;   transform: scale(1.12); }
+    }
+
+    @keyframes heartBeatSvg {
+      0%, 100% { transform: scale(1); }
+      25%      { transform: scale(1.08); }
+      50%      { transform: scale(0.96); }
+      75%      { transform: scale(1.06); }
+    }
+
+    @keyframes heartFloat {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+
+    @keyframes heartRingPulse {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.6;
+      }
+      60% {
+        transform: scale(1.2);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1.35);
+        opacity: 0;
+      }
+    }
+
+    @keyframes heartBurst {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.4);
+      }
+      40% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(1.3);
+      }
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      15%  { opacity: 0.9; }
+      100% { transform: translateY(-115vh) translateX(var(--x-move, 0px)); opacity: 0; }
+    }
+
+    @keyframes floatText {
+      0%   { opacity: 0; transform: translate3d(0, 20px, 0) scale(0.9); }
+      15%  { opacity: 1; }
+      50%  { opacity: 1; transform: translate3d(18px, -18px, 0) scale(1.02); }
+      85%  { opacity: 1; }
+      100% { opacity: 0; transform: translate3d(-10px, -40px, 0) scale(0.96); }
+    }
+
+    @keyframes sparkMove {
+      0% {
+        opacity: 0;
+        transform: scale(0.5) translate3d(0, 0, 0);
+      }
+      30% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.2) translate3d(0, -18px, 0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .center-text { font-size: 0.88rem; }
+      .wish { max-width: 200px; font-size: 0.8rem; }
+      .main-heart-svg {
+        width: 150px;
+      }
+      .heart-aura,
+      .heart-glow-ring {
+        width: 220px;
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- INTRO PHONG BÌ MỚI -->
+  <section id="introScene">
+    <div class="intro-envelope">
+      <div class="intro-glow"></div>
+      <div class="envelope-body"></div>
+      <div class="envelope-flap"></div>
+
+      <div class="intro-heart">❤</div>
+
+      <div class="intro-letter">
+        <div class="intro-title">Gửi thầy</div>
+        <div class="intro-sub">Một lời chúc nhỏ cho ngày 20/11 đặc biệt...</div>
+        <div class="intro-line">
+          Lá thư này sắp mở ra, <span>món quà bé xíu</span><br/>
+          nhưng chứa đầy sự biết ơn từ tụi em 💌
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAYER CHUYỂN CẢNH FLASH -->
+  <div id="transitionLayer"></div>
+
+  <!-- MÀN CHÍNH -->
+  <section id="mainScene">
+    <div class="main-heart-wrap">
+      <div class="heart-aura"></div>
+      <div class="heart-glow-ring"></div>
+
+      <span class="heart-spark s1"></span>
+      <span class="heart-spark s2"></span>
+      <span class="heart-spark s3"></span>
+      <span class="heart-spark s4"></span>
+
+      <svg class="main-heart-svg" viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffe6f0"/>
+            <stop offset="40%" stop-color="#ff4f7b"/>
+            <stop offset="80%" stop-color="#e01363"/>
+            <stop offset="100%" stop-color="#6a0349"/>
+          </linearGradient>
+          <radialGradient id="heartHighlight" cx="30%" cy="25%" r="40%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.95)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </radialGradient>
+        </defs>
+
+        <path
+          d="M100 30
+             C 80 0 30 0 30 40
+             C 30 70 60 100 100 130
+             C 140 100 170 70 170 40
+             C 170 0 120 0 100 30 Z"
+          fill="url(#heartGradient)"
+        />
+        <ellipse cx="80" cy="45" rx="32" ry="26" fill="url(#heartHighlight)"/>
+      </svg>
+
+      <span class="shoot-heart sh1" style="--tx:-70px; --ty:-90px;">❤</span>
+      <span class="shoot-heart sh2" style="--tx:85px; --ty:-60px;">❤</span>
+      <span class="shoot-heart sh3" style="--tx:0px; --ty:90px;">❤</span>
+    </div>
+
+    <h1 class="main-title">
+      Chúc mừng <span>Ngày Nhà giáo Việt Nam 20/11</span>
+    </h1>
+
+    <div class="flying-wishes">
+      <p class="wish">
+        Chúc thầy mỗi ngày đến lớp đều đầy ắp tiếng cười và sự bình yên. 🌟
+      </p>
+      <p class="wish">
+        Cảm ơn thầy vì đã kiên nhẫn dẫn đường cho chúng em trên hành trình trưởng thành. 💗
+      </p>
+      <p class="wish">
+        Tụi em luôn tự hào vì được là học trò của thầy. ❤️
+      </p>
+    </div>
+  </section>
+
+  <script>
+    // Intro tự động mở, không cần thao tác
+    const intro = document.getElementById("introScene");
+    const mainScene = document.getElementById("mainScene");
+
+    window.addEventListener("load", () => {
+      // cho phong bì xuất hiện 1 chút rồi mới mở
+      setTimeout(() => {
+        intro.classList.add("open");
+      }, 600);
+
+      // sau khi mở xong thì kích hoạt flash + hiện nội dung
+      setTimeout(() => {
+        document.body.classList.add("flash-transition");
+        intro.classList.add("fade-out");
+
+        // cho mainScene hiện trong lúc flash đang bung
+        setTimeout(() => {
+          mainScene.classList.add("show");
+        }, 400);
+      }, 2600);
+
+      // ẩn hẳn intro khỏi DOM sau khi xong chuyển cảnh
+      setTimeout(() => {
+        intro.style.display = "none";
+      }, 3600);
+    });
+
+    // tim nền bay
+    function createFloatingHeart() {
+      const heart = document.createElement("span");
+      heart.className = "floating-heart";
+      heart.textContent = "❤";
+
+      const size = Math.random() * 16 + 12;
+      heart.style.fontSize = size + "px";
+
+      const left = Math.random() * 100;
+      heart.style.left = left + "vw";
+
+      const xMove = (Math.random() * 40 - 20).toFixed(0) + "px";
+      heart.style.setProperty("--x-move", xMove);
+
+      const duration = Math.random() * 5 + 6;
+      heart.style.animationDuration = duration + "s";
+
+      document.body.appendChild(heart);
+      heart.addEventListener("animationend", () => heart.remove());
+    }
+
+    setInterval(createFloatingHeart, 320);
+    for (let i = 0; i < 10; i++) {
+      setTimeout(createFloatingHeart, i * 150);
+    }
+  </script>
+</body>
+</html>
