@@ -320,12 +320,12 @@
     }
 
     .wish {
-      position: absolute;
-      max-width: 260px;
-      font-size: 0.84rem;
-      opacity: 0;
-      filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.7));
-      animation: floatText 14s linear infinite;
+    position: absolute;
+    max-width: clamp(220px, 24vw, 360px);
+    font-size: clamp(0.9rem, 1.3vw, 1.4rem); /* nhỏ trên mobile, to dần khi màn hình lớn */
+    opacity: 0;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.7));
+    animation: floatText 14s linear infinite;
     }
 
     .wish:nth-child(1) { top: 12%; left: 8%; animation-delay: 0s; }
