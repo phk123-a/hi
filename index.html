@@ -18,137 +18,148 @@
 
     /* =============== INTRO MỚI: PHONG BÌ =============== */
     #introScene {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, #ffe5ec 0, #1b2945 65%, #050816 100%);
-      z-index: 10;
-      animation: introFadeIn 0.6s ease forwards;
-      overflow: hidden;
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top, #ffe5ec 0, #1b2945 65%, #050816 100%);
+    z-index: 10;
+    animation: introFadeIn 0.6s ease forwards;
+    overflow: hidden;
     }
 
+    /* wrapper để scale toàn bộ lá thư */
+    .intro-scale {
+    transform-origin: center center;
+    }
+
+    /* KÍCH THƯỚC GỐC TRÊN PC – mobile chỉ scale xuống, không đổi bố cục */
     .intro-envelope {
-      position: relative;
-      width: min(360px, 80vw);
-      height: 220px;
-      border-radius: 18px;
-      background: linear-gradient(145deg, #f8cdda, #fba0c5);
-      box-shadow:
+    position: relative;
+    width: 640px;             /* kích cỡ gốc trên PC */
+    height: 260px;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #f8cdda, #fba0c5);
+    box-shadow:
         0 20px 50px rgba(0, 0, 0, 0.6),
         0 0 26px rgba(255, 200, 220, 0.9);
-      overflow: hidden;
-      transform: scale(0.9);
-      animation: envelopePopIn 0.9s cubic-bezier(0.17, 0.67, 0.32, 1.35) forwards;
+    overflow: hidden;
+    animation: envelopePopIn 0.9s cubic-bezier(0.17, 0.67, 0.32, 1.35) forwards;
     }
 
+    /* các phần còn lại giữ như bạn đang dùng */
     .envelope-body {
-      position: absolute;
-      inset: 34% 0 0 0;
-      background: linear-gradient(145deg, #f5a0c1, #f06292);
-      clip-path: polygon(0 0, 50% 45%, 100% 0, 100% 100%, 0 100%);
+    position: absolute;
+    inset: 34% 0 0 0;
+    background: linear-gradient(145deg, #f5a0c1, #f06292);
+    clip-path: polygon(0 0, 50% 45%, 100% 0, 100% 100%, 0 100%);
     }
 
     .envelope-flap {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(145deg, #ffe8f2, #f5b5ce);
-      clip-path: polygon(0 0, 100% 0, 50% 65%);
-      transform-origin: top center;
-      transform-style: preserve-3d;
-      backface-visibility: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, #ffe8f2, #f5b5ce);
+    clip-path: polygon(0 0, 100% 0, 50% 65%);
+    transform-origin: top center;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     }
 
     .intro-heart {
-      position: absolute;
-      top: 46%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #fff, #ff4f7b);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 20px;
-      box-shadow: 0 0 16px rgba(255, 150, 190, 0.9);
-      z-index: 3;
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff, #ff4f7b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    box-shadow: 0 0 16px rgba(255, 150, 190, 0.9);
+    z-index: 3;
     }
 
     .intro-glow {
-      position: absolute;
-      inset: -40%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.65), transparent 65%);
-      opacity: 0;
-      pointer-events: none;
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.65), transparent 65%);
+    opacity: 0;
+    pointer-events: none;
     }
 
     .intro-letter {
-      position: absolute;
-      inset: 18px;
-      background: #fffaf3;
-      border-radius: 14px;
-      padding: 18px 20px;
-      text-align: center;
-      color: #3a2440;
-      transform: translateY(80%) rotate(-2deg);
-      opacity: 0;
-      box-shadow:
+    position: absolute;
+    inset: 18px 32px;      /* trên/dưới ngắn lại, trái/phải đều nhau */
+    background: #fffaf3;
+    border-radius: 18px;
+    padding: 20px 34px;
+    text-align: center;
+    color: #3a2440;
+    transform: translateY(80%) rotate(-2deg);
+    opacity: 0;
+    box-shadow:
         0 12px 28px rgba(0, 0, 0, 0.28),
         0 0 18px rgba(250, 190, 210, 0.9);
-      z-index: 2;
+    z-index: 2;
     }
 
     .intro-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 0.3rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
     }
 
     .intro-sub {
-      font-size: 0.85rem;
-      opacity: 0.88;
-      margin-bottom: 0.4rem;
+    font-size: clamp(0.9rem, 2.1vw, 1.2rem);
+    opacity: 0.9;
+    margin-bottom: 0.8rem;
+    /* không dùng white-space ở đây nữa */
     }
 
+
     .intro-line {
-      font-size: 0.87rem;
-      margin-top: 0.2rem;
+    font-size: 1.1rem;
+    margin-top: 0.25rem;
+    line-height: 1.7;
+    white-space: nowrap;   /* 1 câu = 1 dòng, chỉ xuống ở <br> */
     }
 
     .intro-line span {
-      color: #e91e63;
-      font-weight: 600;
+    color: #e91e63;
+    font-weight: 600;
     }
 
-    /* Khi intro mở phong bì */
+    /* Khi intro mở phong bì – giữ nguyên của bạn */
     #introScene.open .envelope-flap {
-      animation: flapOpen 1.3s ease-out forwards;
+    animation: flapOpen 1.3s ease-out forwards;
     }
 
     #introScene.open .intro-letter {
-      animation: letterUpFancy 1.3s cubic-bezier(0.22, 0.6, 0.25, 1.1) forwards 0.45s;
+    animation: letterUpFancy 1.3s cubic-bezier(0.22, 0.6, 0.25, 1.1) forwards 0.45s;
     }
 
     #introScene.open .intro-glow {
-      animation: glowPulse 1.8s ease-out forwards 0.4s;
+    animation: glowPulse 1.8s ease-out forwards 0.4s;
     }
 
     /* Heart fade out & thu nhỏ khi mở */
     #introScene.open .intro-heart {
-      animation: heartFadeOut 0.7s ease-out forwards 0.3s;
+    animation: heartFadeOut 0.7s ease-out forwards 0.3s;
     }
 
     #introScene.fade-out {
-      animation: introFadeOut 0.8s ease forwards;
-      pointer-events: none;
+    animation: introFadeOut 0.8s ease forwards;
+    pointer-events: none;
     }
+
 
     /* =============== LAYER CHUYỂN CẢNH FLASH =============== */
     #transitionLayer {
@@ -490,22 +501,95 @@
     }
 
     @media (max-width: 600px) {
-      .center-text { font-size: 0.88rem; }
-      .wish { max-width: 200px; font-size: 0.8rem; }
-      .main-heart-svg {
-        width: 150px;
-      }
-      .heart-aura,
-      .heart-glow-ring {
-        width: 220px;
-        height: 220px;
-      }
+    .intro-envelope {
+        height: 230px;            /* ngắn hơn trên điện thoại */
     }
+
+    .intro-letter {
+        inset: 14px 24px;         /* sát mép trên/dưới hơn chút */
+        padding: 14px 24px 16px;  /* cân trái/phải, ít trắng dưới */
+    }
+
+    /* THÊM ĐOẠN NÀY */
+    .intro-sub {
+        white-space: normal; /* cho phép xuống dòng, không tràn mép giấy */
+    }
+    }
+
+    .intro-envelope {
+    position: relative;
+    width: min(560px, 92vw);
+    height: 260px; /* lùn hơn để bớt khoảng trống dưới */
+    border-radius: 18px;
+    background: linear-gradient(145deg, #f8cdda, #fba0c5);
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        0 0 26px rgba(255, 200, 220, 0.9);
+    overflow: hidden;
+    transform: scale(0.9);
+    animation: envelopePopIn 0.9s cubic-bezier(0.17, 0.67, 0.32, 1.35) forwards;
+    }
+
+    .intro-letter {
+    position: absolute;
+    inset: 16px 28px;  /* trên/dưới sát hơn, trái/phải đối xứng */
+    background: #fffaf3;
+    border-radius: 18px;
+    padding: 18px 30px;
+    text-align: center;
+    color: #3a2440;
+    transform: translateY(80%) rotate(-2deg);
+    opacity: 0;
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.28),
+        0 0 18px rgba(250, 190, 210, 0.9);
+    z-index: 2;
+    }
+
+
+
+    .intro-title {
+    font-size: clamp(1.3rem, 2.6vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+    }
+
+    .intro-sub {
+    font-size: 1.06rem;
+    opacity: 0.9;
+    margin-bottom: 0.7rem;
+    /* bỏ white-space để nó tự canh, không bị tràn */
+    }
+
+
+    .intro-line {
+    font-size: clamp(0.9rem, 2.1vw, 1.2rem);
+    margin-top: 0.25rem;
+    line-height: 1.7;
+    white-space: nowrap;      /* 1 câu = 1 dòng, chỉ xuống ở <br> */
+    }
+    @media (min-width: 1200px) {
+    .intro-envelope {
+        height: 290px;
+        border-radius: 22px;
+    }
+
+    .intro-letter {
+        inset: 20px 30px;
+        border-radius: 22px;
+        padding: 22px 36px;
+    }
+    }
+
+
   </style>
 </head>
 <body>
-  <!-- INTRO PHONG BÌ MỚI -->
-  <section id="introScene">
+<!-- INTRO PHONG BÌ MỚI -->
+<section id="introScene">
+  <div class="intro-scale">
     <div class="intro-envelope">
       <div class="intro-glow"></div>
       <div class="envelope-body"></div>
@@ -522,7 +606,9 @@
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- LAYER CHUYỂN CẢNH FLASH -->
   <div id="transitionLayer"></div>
@@ -589,29 +675,54 @@
     // Intro tự động mở, không cần thao tác
     const intro = document.getElementById("introScene");
     const mainScene = document.getElementById("mainScene");
+    // scale lá thư theo chiều rộng màn hình, giữ đúng bố cục PC
+    const introScale = document.querySelector(".intro-scale");
+
+    function scaleIntroCard() {
+    if (!introScale) return;
+
+    const baseWidth = 640;  // width gốc trên PC
+
+    // Cho phép thư lớn hơn khung mobile (zoom in) để dễ nhìn
+    const targetWidth = window.innerWidth * 1.35;   // tăng lên 125% màn hình
+
+    // Scale = targetWidth / baseWidth, nhưng không vượt quá 1 trên PC
+    const scale = Math.min(targetWidth / baseWidth, 1);
+
+    introScale.style.transform = `scale(${scale})`;
+    }
+
 
     window.addEventListener("load", () => {
-      // cho phong bì xuất hiện 1 chút rồi mới mở
-      setTimeout(() => {
-        intro.classList.add("open");
-      }, 600);
+    // scale ngay khi load
+    scaleIntroCard();
 
-      // sau khi mở xong thì kích hoạt flash + hiện nội dung
-      setTimeout(() => {
+    // cho phong bì xuất hiện 1 chút rồi mới mở
+    setTimeout(() => {
+        intro.classList.add("open");
+    }, 600);
+
+    // sau khi thư mở xong, cho ~8s để đọc rồi mới chuyển cảnh
+    setTimeout(() => {
         document.body.classList.add("flash-transition");
         intro.classList.add("fade-out");
 
         // cho mainScene hiện trong lúc flash đang bung
         setTimeout(() => {
-          mainScene.classList.add("show");
+        mainScene.classList.add("show");
         }, 400);
-      }, 2600);
+    }, 10200);
 
-      // ẩn hẳn intro khỏi DOM sau khi xong chuyển cảnh
-      setTimeout(() => {
+    // ẩn hẳn intro khỏi DOM sau khi xong chuyển cảnh
+    setTimeout(() => {
         intro.style.display = "none";
-      }, 3600);
+    }, 11400);
     });
+
+    // scale lại khi xoay/dổi kích cỡ màn hình
+    window.addEventListener("resize", scaleIntroCard);
+
+
 
     // tim nền bay
     function createFloatingHeart() {
